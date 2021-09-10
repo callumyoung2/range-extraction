@@ -1,0 +1,61 @@
+#Range Extraction
+#Takes an array of integers and returns them as a string, where if 3 or more values next to each other in the array are consecutive, they are returned as a range instead
+#In this context, consecutive means two values that have a difference of 1, not two values that are next to each other in an array
+#Challenge taken from codewars.com
+#Callum Young 2021
+
+
+def solution(args): #Static class due to rules of challenge.
+    finalString = ""
+    usedNumberList = [] #Stores numbers that are already in finalString in a list. This is done so that numbers contained within ranges are not added to finalString multiple times
+    for i in range(len(args)):
+        currentArg = args[i]
+        if i+1 >= len(args): #Checks if i+1 is a valid index for args. 
+            #If it isn't, currentArg is added to finalString, without a comma - as this will always be the end of the list.
+            #However, if it is in usedNumberList(e.g part of a range at the end of finalString). it doesn't get added
+            if currentArg not in usedNumberList:
+                finalString += str(currentArg)
+            break
+        else:
+            nextArg = args[i+1]
+        
+        rangeList = [] #Stores the range of numbers in the list which are consecutive
+        k = 0 #Tracks the number of iterations of the while loop
+        while currentArg not in usedNumberList: #This loop only runs if currentArg is not in usedNumberList, to eliminate repeated entries
+            #Otherwise it is an endless while loop which will be broken out of when sufficient conditions are met.
+            #In this case it will be when two numbers next to each other in an array are NOT consecutive
+            
+            rangeList.append(currentArg) #Appends the number to rangeList each time the loop runs
+            usedNumberList.append(currentArg)
+            if currentArg+1 == nextArg: #Checks if two values next to each other are the same
+                
+                currentArg = nextArg #Sets currentArg to nextArg so that the next time the loop is run, the next two values in the array will be compared to each other.
+                if i+k+2 >= len(args): #Again, checking if the next index is valid. If it isn't the while loop will be broken out of to avoid errors with assigning nextArg, and the final additions to finalString will be made
+                    if len(rangeList) >= 2: #If rangeList is greater or equal to 3, a range is added to finalString
+                        #This is 2, not 3 at this point in the program, as the final value has not yet been added due to the way the loop works
+                        rangeList.append(nextArg) #The final value of a range gets added here, as if the loop were to run again it would crash when trying to create nextArg
+                        usedNumberList.append(nextArg)
+                        finalString += str(rangeList[0])+"-"+str(rangeList[len(rangeList)-1]) #Adds the first value of rangeList, a dash, and the final value of rangeList to create the range
+                        #No comma is added here as this will always be the final addition to finalString at this part of the program
+                        break
+                    
+                    else: #This part of the program runs if rangeList contains 2 elements or less. The elements within rangeList are added to finalString separately
+                        finalString+=str(rangeList[0])+","
+                        if len(rangeList) == 2:
+                            finalString += str(rangeList[1]) #the if statement is used here instead of a loop because the last value of finalString must not be followed with a comma.
+                        break
+                    
+                else: #If nextArg will be valid, the while loop continues
+                    nextArg = args[i+k+2] #nextArg is updated to the value in the array after currentArg
+                    #The index is i(The initial index of currentArg when the while loop was started) + k(the amount of times the while loop has run) + 2 (as the initial 2 values of args[i] and args[i+1] have already been used)
+                    k+=1 #Increments k to show amount of times the while loop has run.
+            
+            elif len(rangeList) >= 3: #If the elements in the array aren't consecutive, the range (or individual values) are added to finalString and the while loop is broken out of
+                finalString += str(rangeList[0])+"-"+str(rangeList[len(rangeList)-1]) +","
+                break
+            else: #The code here is the same as above, except the values will continue so a comma is added at the end
+                for j in range(len(rangeList)):
+                    finalString += str(rangeList[j])+","
+                break
+                    
+    return finalString
