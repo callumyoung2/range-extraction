@@ -6,6 +6,11 @@
 
 
 def solution(args): #Static class due to rules of challenge.
+    '''
+    Takes an array of integers and returns them as a string, where if 3 or more values next to each other in the array are consecutive, they are returned as a range instead
+    :param args: array of integers
+    :return: string with ranges included
+    '''
     finalString = ""
     usedNumberList = [] #Stores numbers that are already in finalString in a list. This is done so that numbers contained within ranges are not added to finalString multiple times
     for i in range(len(args)):
